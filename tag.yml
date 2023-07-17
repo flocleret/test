@@ -1,0 +1,17 @@
+- name: Exemple de boucle
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Initialiser la variable list_tags
+      set_fact:
+        list_tags: ""
+
+    - name: Vérifier l'appartenance aux groupes
+      set_fact:
+        list_tags: "{{ list_tags }} {{ item }}"
+      loop: "{{ groups.keys }}"
+      when: inventory_hostname in groups[item]
+
+    - name: Afficher les groupes des hôtes
+      debug:
+        var: list_tags
