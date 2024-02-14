@@ -1,0 +1,1 @@
+sum(if(your_metric_name == 60 or your_metric_name == 61 or your_metric_name == 62, 0, 1))
