@@ -1,0 +1,16 @@
+---
+- name: Kill Process Playbook
+  hosts: your_target_host
+  become: yes  # Run tasks with sudo (root) privileges
+
+  tasks:
+    - name: Find Process ID (PID)
+      command: "pgrep your_process_name"
+      register: process_pid
+      ignore_errors: true  # Ignore errors if the process is not running
+
+    - name: Kill Process
+      signal:
+        signal: TERM  # You can change this to KILL for a forceful termination
+        pid: "{{ process_pid.stdout }}"
+      when: process_pid.stdout is defined  # Execute only if the process is running
