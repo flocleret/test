@@ -1,0 +1,47 @@
+# Telegraf Configuration
+
+# Agent Configuration
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+  debug = false
+  quiet = false
+  logfile = ""
+
+# Prometheus Output Plugin
+[[outputs.prometheus_client]]
+  listen = ":9273"
+  path = "/metrics"
+
+# System Metrics Collection
+[[inputs.win_perf_counters]]
+  [[inputs.win_perf_counters.object]]
+    ObjectName = "Processor"
+    Instances = ["*"]
+    Counters = [
+      "% Idle Time",
+      "% Processor Time",
+      "% User Time",
+    ]
+
+  [[inputs.win_perf_counters.object]]
+    ObjectName = "Memory"
+    Instances = ["*"]
+    Counters = [
+      "Available Bytes",
+      "Committed Bytes",
+    ]
+
+# Add more input plugins for other metrics as needed
+
+# Example: Uncomment and customize for additional metrics
+# [[inputs.<input_plugin>]]
+#   ...
+
+# Add more output plugins if needed
