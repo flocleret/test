@@ -1,0 +1,24 @@
+---
+- name: Run app.sh script with Ansible
+  hosts: your_target_host
+  become: yes
+  tasks:
+    - name: Run app.sh with option -a start
+      shell: /path/to/app.sh -a start
+      register: script_output
+      async: 3600  # Maximum runtime in seconds
+      poll: 60     # Check every 60 seconds if the task is done
+
+    - name: Wait for app.sh to complete
+      async_status:
+        jid: "{{ script_output.ansible_job_id }}"
+      register: job_status
+      until: job_status.finished
+      retries: 10  # Maximum number of retries
+      delay: 60    # Delay between retries
+
+    - name: Ensure the script exited successfully
+      assert:
+        that:
+          - job_status.rc == 0
+        fail_msg: "app.sh did not exit successfully"
